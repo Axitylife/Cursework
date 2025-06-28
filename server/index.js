@@ -85,10 +85,6 @@ app.post("/login", (req, res) => {
 app.get("/ideas", (_req, res) => {
   res.json(ideas);
 });
-/* Получить названия идей 
-app.get("/ideas", (_req, res) => {
-  res.json(ideas.title);
-});*/
 
 // Добавить идею
 app.post("/ideas", (req, res) => {
@@ -114,14 +110,87 @@ app.post("/ideas/:id/comments", (req, res) => {
   const { author, text } = req.body;
 
   const idea = ideas.find((i) => i.id === parseInt(id));
-  if (!idea) {
+  if (!idea) return res.status(404).json({ message: "Idea not found" });
+
+  const comment = {
+    author,
+    text,
+    date: new Date().toISOString(),
+  };
+
+  idea.comments.push(comment);
+  saveIdeas();
+  res.json(idea);
+});
+
+//Удаление комментария
+
+app.delete("/ideas/:id/comments/:index", (req, res) => {
+  const { id, index } = req.params;
+  const idea = ideas.find((i) => i.id === parseInt(id));
+  if (!idea) return res.status(404).json({ message: "Idea not found" });
+
+  idea.comments.splice(index, 1);
+  saveIdeas();
+  res.json(idea);
+});
+
+// Редактирование комментария
+
+app.patch("/ideas/:id/comments/:index", (req, res) => {
+  const { id, index } = req.params;
+  const { text } = req.body;
+
+  const idea = ideas.find((i) => i.id === parseInt(id));
+  if (!idea) return res.status(404).json({ message: "Idea not found" });
+
+  if (!idea.comments[index])
+    return res.status(404).json({ message: "Comment not found" });
+
+  idea.comments[index].text = text;
+  saveIdeas();
+  res.json(idea);
+});
+//Добавим archive.json (если его нет)
+
+const archiveFilePath = path.join(__dirname, "archive.json");
+
+function saveArchive(archivedIdeas) {
+  fs.writeFileSync(archiveFilePath, JSON.stringify(archivedIdeas, null, 2));
+}
+
+let archivedIdeas = [];
+try {
+  archivedIdeas = JSON.parse(fs.readFileSync(archiveFilePath, "utf-8"));
+} catch {
+  archivedIdeas = [];
+}
+
+// Роут: Удаление идеи
+app.delete("/ideas/:id", (req, res) => {
+  const { id } = req.params;
+  const { username } = req.body;
+
+  const ideaIndex = ideas.findIndex((i) => i.id === parseInt(id));
+  if (ideaIndex === -1)
     return res.status(404).json({ message: "Idea not found" });
+
+  const idea = ideas[ideaIndex];
+  if (idea.author !== username) {
+    return res
+      .status(403)
+      .json({ message: "Only the author can delete this idea" });
   }
 
-  idea.comments.push({ author, text });
-  saveIdeas();
+  // Удаляем из основного списка
+  ideas.splice(ideaIndex, 1);
 
-  res.json(idea);
+  // Архивируем
+  archivedIdeas.push(idea);
+  saveIdeas();
+  saveArchive(archivedIdeas);
+
+  res.json({ message: "Idea archived" });
 });
 
 // === Запуск сервера ===
