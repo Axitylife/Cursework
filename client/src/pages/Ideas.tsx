@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { IdeaModal } from "./IdeaModal";
 import { CreateIdeaModal } from "./CreateIdeaModal";
 
@@ -16,6 +17,8 @@ export default function Ideas() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const navigate = useNavigate();
+
   const fetchIdeas = () => {
     fetch("http://localhost:4000/ideas")
       .then((res) => {
@@ -28,13 +31,29 @@ export default function Ideas() {
       .catch((err) => setError(err.message));
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("username");
+    navigate("/login");
+  };
+
+  // === Проверка авторизации ===
   useEffect(() => {
-    fetchIdeas();
-  }, []);
+    const username = localStorage.getItem("username");
+    if (!username) {
+      navigate("/login");
+    } else {
+      fetchIdeas();
+    }
+  }, [navigate]);
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Список идей</h2>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <h2>Список идей</h2>
+        <button onClick={handleLogout} style={{ height: "30px" }}>
+          Выйти
+        </button>
+      </div>
 
       <button
         onClick={() => setShowCreateModal(true)}

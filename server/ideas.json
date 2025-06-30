@@ -1,111 +1,30 @@
 [
   {
     "id": 1,
-    "title": "1",
-    "description": "12",
-    "author": "1",
+    "title": "New",
+    "description": "Test",
+    "createdAt": "2025-06-30T11:48:04.108Z",
     "comments": [
       {
-        "author": "1",
-        "text": "123"
+        "id": 8,
+        "author": "Anonymous",
+        "text": "фыв",
+        "createdAt": "2025-06-30T15:32:40.188Z"
       }
     ]
   },
   {
     "id": 2,
-    "title": "12",
-    "description": "",
-    "author": "1",
-    "comments": [
-      {
-        "author": "1",
-        "text": "15"
-      },
-      {
-        "author": "1",
-        "text": "123"
-      },
-      {
-        "author": "1",
-        "text": "214"
-      },
-      {
-        "author": "1",
-        "text": "1234"
-      },
-      {
-        "author": "1",
-        "text": "1234"
-      },
-      {
-        "author": "1",
-        "text": ""
-      }
-    ]
-  },
-  {
-    "id": 3,
-    "title": "12",
-    "description": "",
-    "author": "1",
-    "comments": [
-      {
-        "author": "1",
-        "text": "dafsd"
-      }
-    ]
-  },
-  {
-    "id": 4,
-    "title": "",
-    "description": "",
-    "author": "1",
-    "comments": []
-  },
-  {
-    "id": 5,
-    "title": "",
-    "description": "",
-    "author": "1",
-    "comments": []
-  },
-  {
-    "id": 6,
-    "title": "",
-    "description": "",
-    "author": "1",
-    "comments": []
-  },
-  {
-    "id": 7,
-    "title": "",
-    "description": "",
-    "author": "1",
-    "comments": []
-  },
-  {
-    "id": 8,
-    "title": "фываф",
-    "description": "фы",
-    "author": "1",
-    "comments": []
-  },
-  {
-    "id": 9,
-    "title": "asd",
-    "description": "asd",
-    "comments": []
-  },
-  {
-    "id": 10,
     "title": "Test",
-    "description": "asd",
-    "comments": []
-  },
-  {
-    "id": 11,
-    "title": "test",
-    "description": "asd",
-    "comments": []
+    "description": "test",
+    "createdAt": "2025-06-30T15:24:51.244Z",
+    "comments": [
+      {
+        "id": 9,
+        "author": "Anonymous",
+        "text": "New comment",
+        "createdAt": "2025-06-30T15:33:36.547Z"
+      }
+    ]
   }
 ]
