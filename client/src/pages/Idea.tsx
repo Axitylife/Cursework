@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+/*import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Comments from "../components/Comments";
 
@@ -60,3 +60,4 @@ const Idea = () => {
   );
 };
 export { Idea };
+*/

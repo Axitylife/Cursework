@@ -1,89 +1,77 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { IdeaModal } from "./IdeaModal";
+import { CreateIdeaModal } from "./CreateIdeaModal";
+
+// Интерфейс идеи
+interface Idea {
+  id: number;
+  title: string;
+  description: string;
+  createdAt?: string;
+}
 
 export default function Ideas() {
-  const [ideas, setIdeas] = useState([]);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const navigate = useNavigate();
+  const [ideas, setIdeas] = useState<Idea[]>([]);
+  const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const username = localStorage.getItem("username");
+  const fetchIdeas = () => {
+    fetch("http://localhost:4000/ideas")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Ошибка при загрузке идей");
+        }
+        return res.json();
+      })
+      .then(setIdeas)
+      .catch((err) => setError(err.message));
+  };
 
   useEffect(() => {
     fetchIdeas();
   }, []);
 
-  const fetchIdeas = () => {
-    fetch("http://localhost:4000/ideas")
-      .then((res) => res.json())
-      .then((data) => setIdeas(data));
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("username");
-    navigate("/login");
-  };
-
-  const handleCreateIdea = async () => {
-    if (!title || !description) {
-      alert("Заполните все поля");
-      return;
-    }
-
-    const res = await fetch("http://localhost:4000/ideas", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description, author: username }),
-    });
-
-    if (res.ok) {
-      setTitle("");
-      setDescription("");
-      fetchIdeas();
-    } else {
-      alert("Ошибка при добавлении идеи");
-    }
-  };
-
   return (
-    <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <h2>Идеи</h2>
-        <button onClick={handleLogout}>Выйти</button>
-      </div>
+    <div style={{ padding: "20px" }}>
+      <h2>Список идей</h2>
 
-      <div style={{ marginBottom: "20px" }}>
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Название"
-          style={{ width: "100%", marginBottom: "8px" }}
-        />
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Описание"
-          style={{ width: "100%", marginBottom: "8px" }}
-        />
-        <button onClick={handleCreateIdea}>Добавить идею</button>
-      </div>
+      <button
+        onClick={() => setShowCreateModal(true)}
+        style={{ marginBottom: "10px" }}
+      >
+        + Создать идею
+      </button>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {ideas.length === 0 && !error && <p>Нет идей</p>}
 
       {ideas.map((idea) => (
         <div
           key={idea.id}
-          onClick={() => navigate(`/idea/${idea.id}`)}
+          onClick={() => setSelectedIdea(idea)}
           style={{
-            cursor: "pointer",
-            padding: "10px",
             border: "1px solid #ccc",
-            marginBottom: "10px",
+            padding: "10px",
+            marginBottom: "8px",
+            cursor: "pointer",
             borderRadius: "6px",
-            backgroundColor: "#f9f9f9",
           }}
         >
           <strong>{idea.title}</strong>
         </div>
       ))}
+
+      {selectedIdea && (
+        <IdeaModal idea={selectedIdea} onClose={() => setSelectedIdea(null)} />
+      )}
+
+      {showCreateModal && (
+        <CreateIdeaModal
+          onClose={() => setShowCreateModal(false)}
+          onCreated={fetchIdeas}
+        />
+      )}
     </div>
   );
 }

@@ -1,15 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-export default function Comments({ ideaId, comments: initialComments }) {
+export default function Comments({ ideaId, initialComments, author, onClose }) {
+  const [comments, setComments] = useState(initialComments || []);
   const [text, setText] = useState("");
-  const [comments, setComments] = useState(initialComments);
-  const username = localStorage.getItem("username");
   const [editIndex, setEditIndex] = useState(null);
   const [editText, setEditText] = useState("");
+  const username = localStorage.getItem("username");
 
-  useEffect(() => {
-    setComments(initialComments);
-  }, [initialComments]);
+  const fetchComments = async () => {
+    const res = await fetch(`http://localhost:4000/ideas`);
+    const data = await res.json();
+    const idea = data.find((i) => i.id === ideaId);
+    if (idea) setComments(idea.comments);
+  };
 
   const addComment = async () => {
     const res = await fetch(`http://localhost:4000/ideas/${ideaId}/comments`, {
@@ -19,9 +22,8 @@ export default function Comments({ ideaId, comments: initialComments }) {
     });
 
     if (res.ok) {
-      const updatedIdea = await res.json();
-      setComments(updatedIdea.comments);
       setText("");
+      fetchComments();
     }
   };
 
@@ -33,15 +35,7 @@ export default function Comments({ ideaId, comments: initialComments }) {
         headers: { "Content-Type": "application/json" },
       }
     );
-    if (res.ok) {
-      const updatedIdea = await res.json();
-      setComments(updatedIdea.comments);
-    }
-  };
-
-  const startEdit = (index, currentText) => {
-    setEditIndex(index);
-    setEditText(currentText);
+    if (res.ok) fetchComments();
   };
 
   const saveEdit = async (index) => {
@@ -53,47 +47,46 @@ export default function Comments({ ideaId, comments: initialComments }) {
         body: JSON.stringify({ text: editText }),
       }
     );
-
     if (res.ok) {
-      const updatedIdea = await res.json();
-      setComments(updatedIdea.comments);
       setEditIndex(null);
       setEditText("");
+      fetchComments();
     }
   };
 
   return (
     <div>
-      <h3>Комментарии</h3>
+      <h4>Комментарии</h4>
       {comments.map((c, i) => (
         <div key={i}>
-          <p>
-            <b>{c.author}</b>:{" "}
-            {editIndex === i ? (
-              <>
-                <input
-                  value={editText}
-                  onChange={(e) => setEditText(e.target.value)}
-                />
-                <button onClick={() => saveEdit(i)}>💾</button>
-                <button onClick={() => setEditIndex(null)}>✖</button>
-              </>
-            ) : (
-              <>
-                {c.text}{" "}
-                <small style={{ fontSize: "12px", color: "gray" }}>
-                  ({new Date(c.date).toLocaleString()})
-                </small>
-                {c.author === username && (
-                  <>
-                    {" "}
-                    <button onClick={() => startEdit(i, c.text)}>✏️</button>
-                    <button onClick={() => deleteComment(i)}>🗑️</button>
-                  </>
-                )}
-              </>
-            )}
-          </p>
+          <b>{c.author}</b>:{" "}
+          {editIndex === i ? (
+            <>
+              <input
+                value={editText}
+                onChange={(e) => setEditText(e.target.value)}
+              />
+              <button onClick={() => saveEdit(i)}>💾</button>
+              <button onClick={() => setEditIndex(null)}>✖</button>
+            </>
+          ) : (
+            <>
+              {c.text} <small>({new Date(c.date).toLocaleString()})</small>
+              {c.author === username && (
+                <>
+                  <button
+                    onClick={() => {
+                      setEditIndex(i);
+                      setEditText(c.text);
+                    }}
+                  >
+                    ✏️
+                  </button>
+                  <button onClick={() => deleteComment(i)}>🗑️</button>
+                </>
+              )}
+            </>
+          )}
         </div>
       ))}
 
