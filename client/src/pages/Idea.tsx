@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Comments from "../components/Comments";
 
-export default function Idea() {
+const Idea = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [idea, setIdea] = useState(null);
@@ -58,4 +58,5 @@ export default function Idea() {
       <Comments ideaId={idea.id} comments={idea.comments} />
     </div>
   );
-}
+};
+export { Idea };

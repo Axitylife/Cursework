@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import Ideas from "./pages/Ideas";
-import Idea from "./pages/idea";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import { Idea } from "./pages/Idea";
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
 
 function App() {
   return (
