@@ -51,21 +51,24 @@ export const CreateIdeaModal: React.FC<Props> = ({ onClose, onCreated }) => {
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>{" "}
-      <div className={s.title}>Описание</div>
-      <textarea
-        className={s.inputW}
-        placeholder="Введите описание"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        rows={5}
-      />
-      <br />
-      <button className={s.button} onClick={handleCreate}>
-        Сохранить
-      </button>
-      <button className={s.button} onClick={onClose}>
-        Отмена
-      </button>
+      <div className={s.wrapper}>
+        <div className={s.title}>Описание</div>
+        <textarea
+          className={s.inputW}
+          placeholder="Введите описание"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          rows={5}
+        />
+      </div>
+      <div className={s.wrapperBTN}>
+        <button className={s.button} onClick={handleCreate}>
+          Сохранить
+        </button>
+        <button className={s.button} onClick={onClose}>
+          Отмена
+        </button>
+      </div>
     </div>
   );
 };

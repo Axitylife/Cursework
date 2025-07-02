@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { IdeaModal } from "../../components/IdeaModal";
 import { CreateIdeaModal } from "../../components/CreateModal";
-import s from "../../styles/IdeadCommon.module.css";
-
+import common from "../../styles/IdeadCommon.module.css";
+import s from "./Ideas.module.css";
 // Интерфейс идеи
 interface Idea {
   id: number;
@@ -48,39 +48,34 @@ const Ideas = () => {
   }, [navigate]);
 
   return (
-    <div className={s.container}>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+    <div className={common.container}>
+      <div className={s.headerBox}>
         <h2>Список идей</h2>
-        <button onClick={handleLogout} className={s.button}>
+        <button onClick={handleLogout} className={common.button}>
           Выйти
         </button>
       </div>
-      <div className={s.wrap}>
+      <div className={common.wrap}>
         <button
           onClick={() => setShowCreateModal(true)}
-          className={s.createBTN}
+          className={s.createIdeaBTN}
         >
-          + Создать идею
+          Новая идея
         </button>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
         {ideas.length === 0 && !error && <p>Нет идей</p>}
-
-        {ideas.map((idea) => (
-          <div
-            key={idea.id}
-            onClick={() => setSelectedIdea(idea)}
-            style={{
-              border: "1px solid #ccc",
-              padding: "10px",
-              marginBottom: "8px",
-              cursor: "pointer",
-              borderRadius: "6px",
-            }}
-          >
-            <strong>{idea.title}</strong>
-          </div>
-        ))}
+        <div className={s.wrapperIdeas}>
+          {ideas.map((idea) => (
+            <div
+              key={idea.id}
+              onClick={() => setSelectedIdea(idea)}
+              className={s.idea}
+            >
+              <strong>{idea.title}</strong>
+            </div>
+          ))}
+        </div>
       </div>
 
       {selectedIdea && (

@@ -1,6 +1,6 @@
 import React from "react";
 import { Comments } from "../Comment";
-import s from "../../styles/IdeadCommon.module.css";
+import s from "./IdeaModal.module.css";
 
 interface Idea {
   id: number;
@@ -39,37 +39,45 @@ export const IdeaModal: React.FC<Props> = ({ idea, onClose }) => {
 
   return (
     <div className={s.modal}>
-      <h3>{idea.title}</h3>
-      <p>{idea.description}</p>
-
-      {(idea.author || idea.createdAt) && (
-        <small>
-          {idea.author && (
-            <>
-              Автор: <strong>{idea.author}</strong> <br />
-            </>
-          )}
-          {idea.createdAt && (
-            <>Создано: {new Date(idea.createdAt).toLocaleString()}</>
-          )}
-        </small>
-      )}
-
-      <hr />
-      <Comments ideaId={idea.id} />
-
-      <div>
-        <button onClick={onClose} className={s.button}>
-          Закрыть
-        </button>
-
+      <div className={s.wrapperBTN}>
+        {" "}
         {/* Показываем "Удалить", если автор совпадает */}
         {idea.author === currentUser && (
-          <button className={s.button} onClick={handleDelete}>
+          <button className={s.deleteBTN} onClick={handleDelete}>
             Удалить
           </button>
         )}
+        <img
+          onClick={onClose}
+          src="/public/icons/cross.png"
+          className={s.closeBTN}
+        />
       </div>
+      <div className={s.wrapper}>
+        <div>
+          <h3>Название: {idea.title}</h3>
+          <hr></hr>
+
+          <p>Описание: {idea.description}</p>
+          <hr></hr>
+        </div>
+        {(idea.author || idea.createdAt) && (
+          <small>
+            {idea.author && (
+              <>
+                Автор: <strong>{idea.author}</strong> <br />
+              </>
+            )}
+            <hr></hr>
+            {idea.createdAt && (
+              <>Создано: {new Date(idea.createdAt).toLocaleString()}</>
+            )}
+            <hr></hr>
+          </small>
+        )}
+      </div>
+
+      <Comments ideaId={idea.id} />
     </div>
   );
 };
