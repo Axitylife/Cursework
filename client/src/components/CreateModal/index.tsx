@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import s from "../../styles/IdeadCommon.module.css";
+import s from "./CreateIdeaModal.module.css";
 
 interface Props {
   onClose: () => void;
@@ -32,23 +32,32 @@ export const CreateIdeaModal: React.FC<Props> = ({ onClose, onCreated }) => {
   };
 
   return (
-    <div className={s.modal}>
-      <h3>Создать новую идею</h3>
-      <input
-        className={s.input}
-        type="text"
-        placeholder="Название"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <br />
+    <div className={s.container}>
+      <div className={s.headerBox}>
+        <h3 className={s.header}>Создать новую идею</h3>
+        <img
+          src="/public/icons/cross.png"
+          className={s.closeButton}
+          onClick={onClose}
+        />
+      </div>
+      <div className={s.wrapper}>
+        <div className={s.title}>Название</div>
+        <input
+          className={s.inputW}
+          type="text"
+          placeholder="Введите название"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+      </div>{" "}
+      <div className={s.title}>Описание</div>
       <textarea
-        className={s.input}
-        placeholder="Описание"
+        className={s.inputW}
+        placeholder="Введите описание"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         rows={5}
-        style={{ width: "100%" }}
       />
       <br />
       <button className={s.button} onClick={handleCreate}>

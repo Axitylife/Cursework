@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import s from "../../styles/IdeadCommon.module.css";
+import s from "./Comments.module.css";
 
 interface Comment {
   id: number;
