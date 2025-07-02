@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { IdeaModal } from "./IdeaModal";
-import { CreateIdeaModal } from "./CreateIdeaModal";
+import { IdeaModal } from "../../components/IdeaModal";
+import { CreateIdeaModal } from "../../components/CreateModal";
+import s from "../../styles/IdeadCommon.module.css";
 
 // Интерфейс идеи
 interface Idea {
@@ -11,7 +12,7 @@ interface Idea {
   createdAt?: string;
 }
 
-export default function Ideas() {
+const Ideas = () => {
   const [ideas, setIdeas] = useState<Idea[]>([]);
   const [selectedIdea, setSelectedIdea] = useState<Idea | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -47,39 +48,40 @@ export default function Ideas() {
   }, [navigate]);
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className={s.container}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <h2>Список идей</h2>
-        <button onClick={handleLogout} style={{ height: "30px" }}>
+        <button onClick={handleLogout} className={s.button}>
           Выйти
         </button>
       </div>
-
-      <button
-        onClick={() => setShowCreateModal(true)}
-        style={{ marginBottom: "10px" }}
-      >
-        + Создать идею
-      </button>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {ideas.length === 0 && !error && <p>Нет идей</p>}
-
-      {ideas.map((idea) => (
-        <div
-          key={idea.id}
-          onClick={() => setSelectedIdea(idea)}
-          style={{
-            border: "1px solid #ccc",
-            padding: "10px",
-            marginBottom: "8px",
-            cursor: "pointer",
-            borderRadius: "6px",
-          }}
+      <div className={s.wrap}>
+        <button
+          onClick={() => setShowCreateModal(true)}
+          className={s.createBTN}
         >
-          <strong>{idea.title}</strong>
-        </div>
-      ))}
+          + Создать идею
+        </button>
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {ideas.length === 0 && !error && <p>Нет идей</p>}
+
+        {ideas.map((idea) => (
+          <div
+            key={idea.id}
+            onClick={() => setSelectedIdea(idea)}
+            style={{
+              border: "1px solid #ccc",
+              padding: "10px",
+              marginBottom: "8px",
+              cursor: "pointer",
+              borderRadius: "6px",
+            }}
+          >
+            <strong>{idea.title}</strong>
+          </div>
+        ))}
+      </div>
 
       {selectedIdea && (
         <IdeaModal idea={selectedIdea} onClose={() => setSelectedIdea(null)} />
@@ -93,4 +95,5 @@ export default function Ideas() {
       )}
     </div>
   );
-}
+};
+export { Ideas };

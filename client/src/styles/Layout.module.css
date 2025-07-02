@@ -61,5 +61,11 @@
   color: #aaa;
 }
 body {
-  background-color: black;
+  background: #696969;
+  background: linear-gradient(
+    90deg,
+    rgba(105, 105, 105, 1) 0%,
+    rgba(33, 33, 64, 1) 53%,
+    rgba(0, 147, 176, 1) 99%
+  );
 }

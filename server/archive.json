@@ -1,16 +1,31 @@
 [
   {
-    "id": 9,
-    "title": "Test idea",
-    "description": "Description\n",
-    "author": "admon",
-    "comments": []
+    "id": 1,
+    "title": "a",
+    "description": "as",
+    "author": "admin",
+    "createdAt": "2025-07-02T05:40:58.094Z",
+    "comments": [
+      {
+        "id": 1,
+        "author": "admin",
+        "text": "asd",
+        "createdAt": "2025-07-02T05:41:00.815Z"
+      },
+      {
+        "id": 2,
+        "author": "admin",
+        "text": "asd",
+        "createdAt": "2025-07-02T05:41:02.795Z"
+      }
+    ]
   },
   {
-    "id": 9,
+    "id": 2,
     "title": "asd",
     "description": "asd",
-    "author": "admon",
+    "author": "admin",
+    "createdAt": "2025-07-02T05:41:09.056Z",
     "comments": []
   }
 ]

@@ -111,6 +111,10 @@ app.get("/ideas/:id", (req, res) => {
 app.post("/ideas", (req, res) => {
   const { title, description, author } = req.body;
 
+  if (!title || !description || !author) {
+    return res.status(400).json({ message: "Missing fields" });
+  }
+
   const newIdea = {
     id: ideaId++,
     title,
@@ -141,11 +145,14 @@ app.post("/ideas/:id/comments", (req, res) => {
   const idea = ideas.find((i) => i.id === parseInt(req.params.id));
   if (!idea) return res.status(404).json({ message: "Idea not found" });
 
-  const { content } = req.body;
+  const { author, content } = req.body;
+  if (!author || !content) {
+    return res.status(400).json({ message: "Author and content required" });
+  }
 
   const comment = {
     id: commentId++,
-    author: "Anonymous", // можно заменить, если есть авторизация
+    author,
     text: content,
     createdAt: new Date().toISOString(),
   };
@@ -153,7 +160,7 @@ app.post("/ideas/:id/comments", (req, res) => {
   idea.comments = idea.comments || [];
   idea.comments.push(comment);
   saveIdeas();
-  console.log("Комментарий получен:", comment);
+
   res.json(comment);
 });
 
@@ -192,13 +199,14 @@ app.patch("/comments/:commentId", (req, res) => {
 
 // Удалить идею (в архив)
 app.delete("/ideas/:id", (req, res) => {
-  const { id } = req.params;
+  const id = parseInt(req.params.id);
   const { username } = req.body;
 
-  const index = ideas.findIndex((i) => i.id === parseInt(id));
+  const index = ideas.findIndex((i) => i.id === id);
   if (index === -1) return res.status(404).json({ message: "Idea not found" });
 
   const idea = ideas[index];
+
   if (idea.author !== username) {
     return res
       .status(403)

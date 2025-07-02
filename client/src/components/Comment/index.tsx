@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
+import s from "../../styles/IdeadCommon.module.css";
 
 interface Comment {
   id: number;
-  ideaId: number;
-  content: string;
+  author: string;
+  text: string;
   createdAt: string;
 }
 
@@ -29,11 +30,24 @@ export const Comments: React.FC<Props> = ({ ideaId }) => {
 
   const handleAdd = async () => {
     if (!newComment.trim()) return;
-    await fetch(`http://localhost:4000/ideas/${ideaId}/comments`, {
+
+    const author = localStorage.getItem("username") || "Anonymous";
+
+    const res = await fetch(`http://localhost:4000/ideas/${ideaId}/comments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: newComment }),
+      body: JSON.stringify({
+        author,
+        content: newComment,
+      }),
     });
+
+    if (!res.ok) {
+      const data = await res.json();
+      alert(`Ошибка: ${data.message || "не удалось добавить комментарий"}`);
+      return;
+    }
+
     setNewComment("");
     fetchComments();
   };
@@ -45,7 +59,7 @@ export const Comments: React.FC<Props> = ({ ideaId }) => {
 
   const handleUpdate = async (id: number) => {
     await fetch(`http://localhost:4000/comments/${id}`, {
-      method: "PUT",
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content: editingText }),
     });
@@ -68,31 +82,45 @@ export const Comments: React.FC<Props> = ({ ideaId }) => {
                 value={editingText}
                 onChange={(e) => setEditingText(e.target.value)}
               />
-              <button onClick={() => handleUpdate(comment.id)}>
+              <button
+                className={s.button}
+                onClick={() => handleUpdate(comment.id)}
+              >
                 Сохранить
               </button>
-              <button onClick={() => setEditingId(null)}>Отмена</button>
+              <button className={s.button} onClick={() => setEditingId(null)}>
+                Отмена
+              </button>
             </>
           ) : (
             <>
-              <p style={{ margin: 0 }}>{comment.content}</p>
+              <p style={{ margin: 0 }}>
+                <strong>{comment.author}</strong>: {comment.text}
+              </p>
               <small>{new Date(comment.createdAt).toLocaleString()}</small>
               <br />
               <button
+                className={s.button}
                 onClick={() => {
                   setEditingId(comment.id);
-                  setEditingText(comment.content);
+                  setEditingText(comment.text);
                 }}
               >
                 Редактировать
               </button>
-              <button onClick={() => handleDelete(comment.id)}>Удалить</button>
+              <button
+                className={s.button}
+                onClick={() => handleDelete(comment.id)}
+              >
+                Удалить
+              </button>
             </>
           )}
         </div>
       ))}
 
       <textarea
+        className={s.input}
         value={newComment}
         onChange={(e) => setNewComment(e.target.value)}
         placeholder="Оставьте комментарий"
@@ -100,7 +128,9 @@ export const Comments: React.FC<Props> = ({ ideaId }) => {
         style={{ width: "100%", marginTop: "10px" }}
       />
       <br />
-      <button onClick={handleAdd}>Добавить комментарий</button>
+      <button className={s.button} onClick={handleAdd}>
+        Добавить комментарий
+      </button>
     </div>
   );
 };
